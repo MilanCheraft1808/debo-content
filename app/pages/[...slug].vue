@@ -1,16 +1,26 @@
 <script setup lang="ts">
-// Map "/" -> "/index" so the homepage renders app/content/index.md
-const route = useRoute();
+import { computed } from 'vue'
+
+const route = useRoute()
 const path = computed(() => (route.fullPath === '/' ? '/index' : route.fullPath))
 </script>
 
 <template>
-  <main class="max-w-[1100px] mx-auto px-4 py-10 prose prose-slate">
-    <!-- ContentDoc is auto-registered by @nuxt/content -->
-    <ContentDoc :path="path">
-      <template #not-found>
-        <h1>404 — Page not found</h1>
-      </template>
-    </ContentDoc>
+  <main class="bg-white">
+    <div class="mx-auto w-full max-w-[1100px] px-4">
+      <ContentDoc :path="path">
+        <template #default="slotProps">
+          <PageBuilder :blocks="slotProps?.doc?.blocks">
+            <ContentRenderer v-if="slotProps?.doc?.body" :value="slotProps.doc.body" />
+          </PageBuilder>
+        </template>
+        <template #not-found>
+          <div class="py-20 text-center">
+            <h1 class="text-3xl font-semibold text-dark">404 — Page not found</h1>
+            <p class="mt-2 text-dark/70">The content you are looking for does not exist.</p>
+          </div>
+        </template>
+      </ContentDoc>
+    </div>
   </main>
 </template>

@@ -66,3 +66,20 @@ blocks:
       - q: How do you protect our home during the project?
         a: Floors, furniture, and fixtures are carefully covered, and we perform a daily clean up of the job site.
 ---
+
+::block-faq
+---
+items: >-
+  [
+
+  { "q": "What is this?", "a": "A demo of props-driven BlockFaq." },
+
+  { "q": "Can I change classes?", "a": "No. Styling is locked in the Vue
+  component." },
+
+  { "q": "Where does content live?", "a": "Content comes from Markdown props." }
+
+  ]
+title: Frequently Asked Questions
+---
+::

@@ -1,5 +1,7 @@
 import { defineEventHandler } from 'h3'
 import { useAppConfig, useRuntimeConfig } from '#imports'
+// @ts-expect-error -- virtual module provided by @nuxt/component-meta
+import components from '#nuxt-component-meta/nitro'
 
 type ComponentMeta = {
   pascalName: string
@@ -12,76 +14,25 @@ type ComponentMeta = {
   global?: boolean
 }
 
-const manualComponents: ComponentMeta[] = [
-  {
-    pascalName: 'BlockHero',
-    filePath: '~/components/content/BlockHero.vue',
-    global: true,
-    meta: {
-      props: {
-        eyebrow: { type: 'String', required: false },
-        title: { type: 'String', required: true },
-        subtitle: { type: 'String', required: false },
-        actions: { type: 'Array', required: false },
-        image: { type: 'Object', required: false }
-      }
-    }
-  },
-  {
-    pascalName: 'BlockFeatures',
-    filePath: '~/components/content/BlockFeatures.vue',
-    global: true,
-    meta: {
-      props: {
-        eyebrow: { type: 'String', required: false },
-        heading: { type: 'String', required: true },
-        description: { type: 'String', required: false },
-        features: { type: 'Array', required: false }
-      }
-    }
-  },
-  {
-    pascalName: 'BlockServices',
-    filePath: '~/components/content/BlockServices.vue',
-    global: true,
-    meta: {
-      props: {
-        eyebrow: { type: 'String', required: false },
-        heading: { type: 'String', required: true },
-        description: { type: 'String', required: false },
-        services: { type: 'Array', required: false }
-      }
-    }
-  },
-  {
-    pascalName: 'BlockTestimonials',
-    filePath: '~/components/content/BlockTestimonials.vue',
-    global: true,
-    meta: {
-      props: {
-        eyebrow: { type: 'String', required: false },
-        heading: { type: 'String', required: false },
-        description: { type: 'String', required: false },
-        testimonials: { type: 'Array', required: false }
-      }
-    }
-  },
-  {
-    pascalName: 'BlockFaq',
-    filePath: '~/components/content/BlockFaq.vue',
-    global: true,
-    meta: {
-      props: {
-        title: { type: 'String', required: true },
-        items: { type: 'Array', required: false }
-      }
-    }
-  }
-]
-
 export default defineEventHandler(() => {
   const runtimeConfig = useRuntimeConfig()
   const appConfig = useAppConfig()
+  const componentList = Array.isArray(components)
+    ? components
+    : (Object.values(components || {}) as ComponentMeta[])
+
+  const componentsIgnoredPrefix = ['Content', 'DocumentDriven', 'Markdown']
+  const filteredComponents = componentList
+    .filter((component) => component?.global && !componentsIgnoredPrefix.some((prefix) => component.pascalName?.startsWith(prefix)))
+    .map((component) => ({
+      name: component.pascalName,
+      path: component.filePath,
+      meta: {
+        props: component.meta?.props ?? {},
+        slots: component.meta?.slots ?? {},
+        events: component.meta?.events ?? {}
+      }
+    }))
 
   const contentConfig = runtimeConfig.content || {}
   const publicContent = runtimeConfig.public?.content || {}
@@ -104,10 +55,6 @@ export default defineEventHandler(() => {
     appConfigSchema: runtimeConfig.appConfigSchema || {},
     appConfig,
     content: mergedContent,
-    components: manualComponents.map((component) => ({
-      name: component.pascalName,
-      path: component.filePath,
-      meta: component.meta || { props: {}, slots: {}, events: {} }
-    }))
+    components: filteredComponents
   }
 })

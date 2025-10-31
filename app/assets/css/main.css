@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme{
+    --color-*: initial;
+    --color-primary: #9FAD95;
+    --color-secondary: #F2E8D5;
+    --color-dark: #2C2C2C;
+    --color-white: #FFFFFF;
+
+    --radius-*: initial;
+    --radius-1: 2px;
+    --radius-2: 4px;
+    --radius-3: 8px;
+    --radius-4: 16px;
+
+    --text-body-sm: 14px;
+    --text-body-md: 16px;
+    --text-body-lg: 18px;
+
+    --text-heading-h6: 20px;
+    --text-heading-h5: 24px;
+    --text-heading-h4: 30px;
+    --text-heading-h3: 36px;
+    --text-heading-h2: 48px;
+    --text-heading-h1: 60px;
+
+    --text-body-sm-line-height: 19.5px;
+    --text-body-md-line-height: 24px;
+    --text-body-lg-line-height: 27px;
+}

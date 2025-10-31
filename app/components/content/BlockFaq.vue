@@ -21,8 +21,18 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  title: string
-  items: { q: string; a: string }[]
-}>()
+import { toRef, withDefaults } from 'vue'
+
+const props = withDefaults(
+  defineProps<{
+    title: string
+    items?: { q: string; a: string }[]
+  }>(),
+  {
+    items: () => []
+  }
+)
+
+const title = toRef(props, 'title')
+const items = toRef(props, 'items')
 </script>
